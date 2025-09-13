@@ -1,5 +1,26 @@
-/* === Login.css === */
-.login-card, .reset-card {
+/* === Login.css (Corregido y Autocontenido) === */
+
+/*
+ * 1. El Contenedor Principal
+ * Esta regla aplica el centrado vertical y horizontal a tu div con
+ * la clase "login-container".
+*/
+.login-container {
+  display: flex;
+  align-items: center;      /* Centra verticalmente */
+  justify-content: center;  /* Centra horizontalmente */
+  flex-grow: 1;             /* Ocupa el espacio disponible en la página */
+  padding: 1.5rem;
+  background-color: #f1f5f9; /* Mantenemos el fondo gris claro */
+  min-height: calc(100vh - 70px); /* Ajustado para la navbar */
+}
+
+/*
+ * 2. La Tarjeta de Login
+ * Estilos para la tarjeta blanca del formulario, usando la paleta
+ * de colores azul y gris que definimos.
+*/
+.login-card {
   width: 100%;
   max-width: 450px;
   background-color: #ffffff;
@@ -7,6 +28,16 @@
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   border: 1px solid #dfe4ea;
+}
+
+/* --- Estilos para los elementos del formulario --- */
+.login-card .fw-bold {
+  font-weight: 700 !important;
+  color: #2c3e50;
+}
+
+.form-control-lg {
+  border-radius: 8px;
 }
 
 .form-control-lg:focus {
@@ -28,11 +59,11 @@
   border-color: #2c5d7a;
 }
 
-.login-card a, .reset-card a {
+.login-card a {
   color: #3A7CA5; /* Azul primario */
   text-decoration: none;
 }
 
-.login-card a:hover, .reset-card a:hover {
+.login-card a:hover {
   text-decoration: underline;
 }

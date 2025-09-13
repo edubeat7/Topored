@@ -77,7 +77,7 @@ function Login({ onLoginSuccess }) {
         </form>
         <div className="text-center mt-4">
           <p className="text-muted">¿No tienes una cuenta? <a href="/registro">Regístrate</a></p>
-          <a href="/resetear-contrasena">¿Olvidaste tu contraseña?</a>
+          <a href="/resetearcontrasena">¿Olvidaste tu contraseña?</a>
         </div>
       </div>
     </div>
