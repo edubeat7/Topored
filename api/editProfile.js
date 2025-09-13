@@ -11,6 +11,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    // 1. Verificar el Token de Autenticación
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ message: 'No autorizado: Token no proporcionado.' });
@@ -18,14 +19,41 @@ export default async function handler(req, res) {
 
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET);
-    const userId = decoded.userId;
+    const userId = decoded.userId; // Obtenemos el ID del usuario desde el token
 
-    const fieldsToUpdate = req.body;
+    // 2. Obtenemos los datos del cuerpo de la petición
+    const {
+      nombre,
+      apellido,
+      profesion,
+      cargo,
+      empresa,
+      descripcion,
+      telefono,
+      disponibilidad,
+      mostrar_telefono
+    } = req.body;
 
+    // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
+    // Creamos un nuevo objeto traduciendo los nombres de los campos
+    // a los nombres exactos de las columnas en Airtable.
+    const fieldsToUpdateInAirtable = {
+      "Nombre": nombre,
+      "Apellido": apellido,
+      "Profesion o Estudiante": profesion,
+      "Cargo": cargo,
+      "Empresa": empresa,
+      "Descripcion de actividad": descripcion,
+      "Telefono": telefono,
+      "Disponibilidad": disponibilidad,
+      "Mostrar Telefono": mostrar_telefono,
+    };
+
+    // 3. Actualizar el registro en Airtable
     const updatedRecords = await base(tableName).update([
       {
-        "id": userId,
-        "fields": fieldsToUpdate
+        "id": userId, // Usamos el ID del token para la seguridad
+        "fields": fieldsToUpdateInAirtable // Usamos el objeto con los nombres corregidos
       }
     ]);
 
@@ -36,6 +64,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: 'No autorizado: Token inválido.' });
     }
     console.error("Error en /api/editProfile:", error);
-    res.status(500).json({ message: 'Error al actualizar el perfil.' });
+    const errorMessage = error.message || 'Error al actualizar el perfil.';
+    res.status(500).json({ message: errorMessage });
   }
 }
