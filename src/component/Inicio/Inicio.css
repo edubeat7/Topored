@@ -1,6 +1,7 @@
 /* === Inicio.css === */
+
 .hero-section {
-  /* Gradiente sutil de un gris oscuro a un azul profesional */
+  /* Usamos la paleta de colores azul y gris profesional */
   background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(58, 124, 165, 0.9)), url('https://source.unsplash.com/random/1600x900/?office,modern') no-repeat center center;
   background-size: cover;
   color: #ffffff;
@@ -9,8 +10,17 @@
 }
 
 .hero-section h1 {
+  /* Este es el tamaño para pantallas grandes */
   font-size: 3.5rem;
   font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hero-section p {
+  font-size: 1.25rem;
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+  opacity: 0.95;
 }
 
 .hero-buttons .button {
@@ -25,7 +35,7 @@
 
 .button-light {
   background-color: #ffffff;
-  color: #3A7CA5; /* Azul primario */
+  color: #3A7CA5;
 }
 
 .button-light:hover {
@@ -39,7 +49,7 @@
 
 .button-outline-light:hover {
   background-color: #ffffff;
-  color: #3A7CA5; /* Azul primario */
+  color: #3A7CA5;
 }
 
 .features-section {
@@ -65,6 +75,38 @@
 
 .feature-icon {
   font-size: 3rem;
-  color: #3A7CA5; /* Azul primario */
+  color: #3A7CA5;
   margin-bottom: 1rem;
+}
+
+
+/* === Media Queries para Responsividad === */
+
+/* Para Tablets (hasta 768px de ancho) */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 6rem 1rem;
+  }
+  .hero-section h1 {
+    font-size: 2.8rem; /* Un tamaño intermedio para tablets */
+  }
+  .features-section {
+    padding: 4rem 1rem;
+  }
+}
+
+/* --- ¡AQUÍ ESTÁ LA MEJORA! --- */
+/* Para Celulares (hasta 576px de ancho) */
+@media (max-width: 576px) {
+  .hero-section h1 {
+    font-size: 2.2rem; /* Tamaño más reducido para pantallas pequeñas */
+    line-height: 1.2;  /* Mejora el espaciado si el título ocupa dos líneas */
+  }
+  
+  .hero-buttons .button {
+    /* Opcional: mejora la apariencia de los botones en celular */
+    display: block;
+    width: 80%;
+    margin: 0.75rem auto;
+  }
 }
