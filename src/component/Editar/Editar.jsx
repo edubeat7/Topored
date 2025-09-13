@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { isValidPhoneNumber } from 'libphonenumber-js';
 import './Editar.css';
 
 function EditarPerfil() {
@@ -21,7 +22,6 @@ function EditarPerfil() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [claveConfirmacion, setClaveConfirmacion] = useState(''); // Se mantiene para el modal de borrado
   const history = useHistory();
 
   useEffect(() => {
@@ -33,13 +33,13 @@ function EditarPerfil() {
 
     // Función para obtener los datos del perfil del usuario logueado
     const fetchUserData = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch('/api/getProfile', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (!response.ok) {
-          // Si el token es inválido o expiró, redirigir al login
           if (response.status === 401) history.push('/login');
           throw new Error('No se pudieron cargar los datos del perfil.');
         }
@@ -64,7 +64,7 @@ function EditarPerfil() {
       }
     };
     
-    // Función para obtener la lista de profesiones (no requiere autenticación)
+    // Función para obtener la lista de profesiones
     const fetchProfesiones = async () => {
         try {
             const response = await fetch('/api/getDirectory');
@@ -95,6 +95,14 @@ function EditarPerfil() {
     setError('');
     setSuccess('');
 
+    // **Validación de formato del teléfono en el frontend**
+    // Asumimos Venezuela ('VE'). Cámbialo si es necesario.
+    if (!isValidPhoneNumber(userData.telefono || '', 'VE')) {
+      setError('Por favor, introduce un número de teléfono válido (ej: +584141234567).');
+      setIsLoading(false);
+      return; // Detenemos el envío si no es válido
+    }
+
     const token = localStorage.getItem('token');
     if (!token) {
       setError('Sesión expirada. Por favor, inicia sesión de nuevo.');
@@ -102,7 +110,6 @@ function EditarPerfil() {
       return;
     }
     
-    // Preparamos los datos para enviar, excluyendo el correo que no se puede cambiar
     const { correo, ...fieldsToUpdate } = userData;
 
     try {
@@ -116,19 +123,14 @@ function EditarPerfil() {
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Error al actualizar el perfil.');
-      }
+      if (!response.ok) throw new Error(data.message || 'Error al actualizar el perfil.');
 
       setSuccess('Perfil actualizado correctamente.');
       
-      // Actualizamos el nombre en localStorage si cambió
       const user = JSON.parse(localStorage.getItem('user'));
-      if (user.nombre !== userData.nombre) {
+      if (user && user.nombre !== userData.nombre) {
           user.nombre = userData.nombre;
           localStorage.setItem('user', JSON.stringify(user));
-          // Disparamos un evento para que el Navbar actualice el nombre
           window.dispatchEvent(new Event('storage'));
       }
 
@@ -143,25 +145,19 @@ function EditarPerfil() {
     setIsLoading(true);
     setError('');
     const token = localStorage.getItem('token');
-
-    // Aquí podrías añadir una verificación de la contraseña si quieres más seguridad
-    // if (!claveConfirmacion) { ... }
     
     try {
       const response = await fetch('/api/deleteUser', {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Error al eliminar la cuenta.');
 
-      // Limpiar todo y redirigir
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.dispatchEvent(new Event('storage')); // Avisa al Navbar que se cerró sesión
+      window.dispatchEvent(new Event('storage'));
       history.push('/');
       
     } catch (err) {
@@ -171,13 +167,13 @@ function EditarPerfil() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !userData.nombre) {
     return (
-      <div className="page-container text-center">
+      <main className="page-container text-center">
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Cargando...</span>
         </div>
-      </div>
+      </main>
     );
   }
 
@@ -236,7 +232,7 @@ function EditarPerfil() {
             
             <div className="mb-3">
               <label htmlFor="telefono" className="form-label">Teléfono</label>
-              <input type="tel" className="form-control" id="telefono" name="telefono" value={userData.telefono} onChange={handleInputChange} required  />
+              <input type="tel" className="form-control" id="telefono" name="telefono" value={userData.telefono} onChange={handleInputChange} required placeholder="+584141234567" />
             </div>
             
             <div className="mb-3">
@@ -279,7 +275,6 @@ function EditarPerfil() {
               </div>
               <div className="modal-body">
                 <p>¿Estás seguro de que quieres eliminar tu cuenta permanentemente? Esta acción es irreversible.</p>
-                {/* Opcional: Podrías añadir un campo de contraseña aquí para más seguridad */}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={() => setShowDeleteModal(false)}>
