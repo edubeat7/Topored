@@ -9,20 +9,28 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
+  // Obtenemos todos los datos del cuerpo de la petición
   const {
     nombre,
     apellido,
+    profesion,
+    cargo,
+    empresa,
+    descripcion,
+    telefono,
     correo,
-    clave,
     palabra_clave,
-    ...otherFields
+    clave,
+    disponibilidad,
+    mostrar_telefono,
   } = req.body;
 
-  if (!nombre || !apellido || !correo || !clave || !palabra_clave) {
+  if (!nombre || !correo || !clave) {
     return res.status(400).json({ message: 'Faltan campos requeridos.' });
   }
 
   try {
+    // Verificamos si el correo ya existe
     const existingRecords = await base(tableName).select({
       maxRecords: 1,
       filterByFormula: `LOWER({Correo}) = '${correo.toLowerCase()}'`
@@ -32,18 +40,31 @@ export default async function handler(req, res) {
       return res.status(409).json({ message: 'Este correo electrónico ya está registrado.' });
     }
 
+    // Hasheamos la contraseña
     const hashedPassword = await bcrypt.hash(clave, 10);
 
+    // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
+    // Creamos el objeto 'fields' mapeando manualmente cada propiedad
+    // al nombre exacto de la columna en Airtable.
+    const fieldsToCreate = {
+      "Nombre": nombre,
+      "Apellido": apellido,
+      "Profesion o Estudiante": profesion,
+      "Cargo": cargo,
+      "Empresa": empresa,
+      "Descripcion de actividad": descripcion,
+      "Telefono": telefono,
+      "Correo": correo,
+      "PalabraClave": palabra_clave,
+      "Clave": hashedPassword, // Guardamos la contraseña hasheada
+      "Disponibilidad": disponibilidad,
+      "Mostrar Telefono": mostrar_telefono,
+    };
+
+    // Creamos el nuevo registro en Airtable
     await base(tableName).create([
       {
-        fields: {
-          "Nombre": nombre,
-          "Apellido": apellido,
-          "Correo": correo,
-          "PalabraClave": palabra_clave,
-          ...otherFields,
-          "Clave": hashedPassword,
-        }
+        fields: fieldsToCreate
       }
     ]);
 
@@ -51,6 +72,8 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error("Error en /api/register:", error);
-    res.status(500).json({ message: 'Error interno del servidor.' });
+    // Devolvemos el mensaje de error de Airtable si está disponible
+    const errorMessage = error.message || 'Error interno del servidor.';
+    res.status(500).json({ message: errorMessage });
   }
 }
