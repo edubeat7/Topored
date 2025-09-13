@@ -1,11 +1,9 @@
-const Airtable = require('airtable');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+import Airtable from 'airtable';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
 const tableName = process.env.AIRTABLE_TABLE_NAME;
-
-// ¡IMPORTANTE! Añade un secreto para tus tokens en las variables de entorno de Vercel
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export default async function handler(req, res) {
@@ -33,13 +31,11 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: 'Credenciales incorrectas.' });
     }
 
-    // --- NUEVO: Generar el Token JWT ---
-    // El token contiene el ID del usuario, que usaremos para identificarlo en otras peticiones.
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1d' }); // El token expira en 1 día
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1d' });
 
     res.status(200).json({
       success: true,
-      token: token, // Enviamos el token al frontend
+      token: token,
       user: {
         id: user.id,
         nombre: user.get('Nombre')
@@ -47,6 +43,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
+    console.error("Error en /api/login:", error);
     res.status(500).json({ message: 'Error interno del servidor.' });
   }
 }

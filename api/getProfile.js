@@ -28,6 +28,7 @@ export default async function handler(req, res) {
     res.status(200).json({ id: record.id, fields: safeFields });
 
   } catch (error) {
+    console.error("Error en /api/getProfile:", error);
     res.status(500).json({ message: 'Error al obtener el perfil.' });
   }
 }

@@ -1,4 +1,4 @@
-const Airtable = require('airtable');
+import Airtable from 'airtable';
 
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
 const tableName = process.env.AIRTABLE_TABLE_NAME;
@@ -10,12 +10,9 @@ export default async function handler(req, res) {
 
   try {
     const records = await base(tableName).select({
-      // Opcional: Ordenar los registros por nombre
       sort: [{ field: 'Nombre', direction: 'asc' }]
     }).all();
 
-    // --- IMPORTANTE: Limpiar los datos antes de enviarlos ---
-    // Nunca envíes campos sensibles como la contraseña hasheada o la palabra clave al frontend.
     const safeRecords = records.map(record => ({
       id: record.id,
       fields: {
@@ -35,7 +32,7 @@ export default async function handler(req, res) {
     res.status(200).json(safeRecords);
 
   } catch (error) {
-    console.error(error);
+    console.error("Error en /api/getDirectory:", error);
     res.status(500).json({ message: 'Error al obtener el directorio.' });
   }
 }
