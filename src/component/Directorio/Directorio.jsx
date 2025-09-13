@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import ProfileCard from './ProfileCard'; // Importamos el componente de la tarjeta
-import './Directorio.css'; // Importamos los estilos
-
-
-
-// Carga las credenciales desde el archivo .env
-const AIRTABLE_API_KEY = import.meta.env.VITE_AIRTABLE_API_KEY;
-const AIRTABLE_BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;
-const AIRTABLE_TABLE_NAME = import.meta.env.VITE_AIRTABLE_TABLE_NAME;
+import ProfileCard from './ProfileCard'; // Componente para la tarjeta de perfil
+import './Directorio.css'; // Estilos específicos del directorio
 
 function DirectoryPage() {
   const [allRecords, setAllRecords] = useState([]);
@@ -20,21 +13,25 @@ function DirectoryPage() {
   useEffect(() => {
     const fetchRecords = async () => {
       setIsLoading(true);
-      const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
+      setError('');
 
       try {
-        const response = await fetch(url, {
-          headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` },
-        });
-        if (!response.ok) throw new Error('Error al cargar los datos.');
+        // La URL ahora apunta a nuestro propio backend seguro
+        const response = await fetch('/api/getDirectory');
+        
+        if (!response.ok) {
+          throw new Error('No se pudo cargar el directorio. Inténtalo de nuevo más tarde.');
+        }
 
-        const data = await response.json();
-        const records = data.records || [];
-        setAllRecords(records);
-        setDisplayedRecords(records);
+        const data = await response.json(); // El backend devuelve un array de registros
+        
+        setAllRecords(data);
+        setDisplayedRecords(data);
 
-        // Extraer y ordenar las profesiones únicas para el filtro
-        const uniqueProfesiones = [...new Set(records.map(r => r.fields['Profesion o Estudiante']))];
+        // Extraer y ordenar las profesiones únicas para el menú de filtro
+        const uniqueProfesiones = [...new Set(
+          data.map(record => record.fields['Profesion o Estudiante']).filter(Boolean) // .filter(Boolean) evita valores nulos o vacíos
+        )];
         setProfesiones(uniqueProfesiones.sort());
 
       } catch (err) {
@@ -45,29 +42,31 @@ function DirectoryPage() {
     };
 
     fetchRecords();
-  }, []); // El array vacío asegura que esto se ejecute solo una vez al montar el componente
+  }, []); // El array vacío asegura que esto se ejecute solo una vez
 
+  // Filtra los registros localmente sin necesidad de llamar a la API de nuevo
   const handleFilter = (e) => {
     e.preventDefault();
     if (!selectedProfesion) {
       setDisplayedRecords(allRecords);
     } else {
-      const filtered = allRecords.filter(r => r.fields['Profesion o Estudiante'] === selectedProfesion);
+      const filtered = allRecords.filter(record => record.fields['Profesion o Estudiante'] === selectedProfesion);
       setDisplayedRecords(filtered);
     }
   };
   
+  // Limpia el filtro y muestra todos los registros de nuevo
   const clearFilter = () => {
       setSelectedProfesion('');
       setDisplayedRecords(allRecords);
   };
 
   return (
-    <div className="container" style={{ paddingTop: '4rem', paddingBottom: '2rem' }}>
-      <div className="text-center mb-5">
-      
+    // Usamos el contenedor principal definido en el App.css global
+    <main className="page-container">
+      <div className="directory-header text-center mb-5">
         <h1 className="display-5 fw-bold">Nuestro Directorio</h1>
-        <p className="lead text-muted">Encuentra y conecta con profesionales de diversas áreas.</p>
+        <p className="lead text-muted">Encuentra y conecta con profesionales de nuestra comunidad.</p>
       </div>
 
       <div className="filter-section">
@@ -97,24 +96,25 @@ function DirectoryPage() {
       </div>
 
       {isLoading && <p className="text-center">Cargando directorio...</p>}
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <div className="alert alert-danger text-center">{error}</div>}
       
       {!isLoading && !error && (
         <div className="row g-4">
           {displayedRecords.length > 0 ? (
             displayedRecords.map(registro => (
+              // Pasamos los campos del registro a cada tarjeta
               <ProfileCard key={registro.id} registro={registro.fields} />
             ))
           ) : (
             <div className="col-12">
-              <div className="alert alert-info text-center">
+              <div className="no-results-alert">
                 No se encontraron registros que coincidan con la búsqueda.
               </div>
             </div>
           )}
         </div>
       )}
-    </div>
+    </main>
   );
 }
 

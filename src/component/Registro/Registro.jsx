@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import './Registro.css';
 
-// Las credenciales se leen desde las variables de entorno (.env)
-const AIRTABLE_API_KEY = import.meta.env.VITE_AIRTABLE_API_KEY;
-const AIRTABLE_BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;
-const AIRTABLE_TABLE_NAME = import.meta.env.VITE_AIRTABLE_TABLE_NAME;
-
 const PROFESIONES = [
     "Administracion", "Agronomia", "Antropologia", "Arquitectura", "Artes",
     "Bibliotecologia", "Bioanalisis", "Biologia", "Ciencias Actuariales",
@@ -56,59 +51,24 @@ function RegistrationPage() {
     setSuccess('');
 
     try {
-      // PASO 1: VERIFICAR SI EL CORREO YA EXISTE EN AIRTABLE
-      const emailToCheck = formData.correo.toLowerCase();
-      const checkUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}?filterByFormula=LOWER({Correo})%20%3D%20'${emailToCheck}'`;
-      
-      const checkResponse = await fetch(checkUrl, {
-        headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
-      });
-
-      if (!checkResponse.ok) {
-        throw new Error('Error al conectar con la base de datos para verificar el correo.');
-      }
-      
-      const checkData = await checkResponse.json();
-
-      if (checkData.records.length > 0) {
-        setError('Este correo electrónico ya está registrado. Por favor, utiliza otro.');
-        setIsLoading(false);
-        return; // Detiene el proceso si el correo ya existe
-      }
-
-      // PASO 2: SI EL CORREO ES ÚNICO, CREAR EL NUEVO USUARIO
-      const airtableRecord = {
-        "Nombre": formData.nombre,
-        "Apellido": formData.apellido,
-        "Profesion o Estudiante": formData.profesion,
-        "Cargo": formData.cargo,
-        "Empresa": formData.empresa,
-        "Descripcion de actividad": formData.descripcion,
-        "Telefono": formData.telefono,
-        "Correo": formData.correo,
-        "PalabraClave": formData.palabra_clave,
-        "Clave": formData.clave,
-        "Disponibilidad": formData.disponibilidad,
-        "Mostrar Telefono": formData.mostrar_telefono,
-      };
-
-      const createUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
-      const createResponse = await fetch(createUrl, {
+      // La URL ahora apunta a nuestro propio backend de registro
+      const response = await fetch('/api/register', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ "records": [{ "fields": airtableRecord }] })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData), // Enviamos todos los datos del formulario
       });
 
-      if (!createResponse.ok) {
-        const errorData = await createResponse.json();
-        throw new Error(errorData.error.message || 'Error al crear la cuenta.');
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Mostramos el mensaje de error que viene directamente del backend
+        throw new Error(data.message || 'Error al crear la cuenta.');
       }
 
       setSuccess('¡Registro exitoso! Serás redirigido al login.');
-      setTimeout(() => { window.location.href = '/login'; }, 3000);
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 3000);
 
     } catch (err) {
       setError(err.message);
@@ -199,7 +159,7 @@ function RegistrationPage() {
           </div>
           <div className="d-grid mt-4">
             <button type="submit" className="btn btn-primary btn-lg" disabled={isLoading}>
-              {isLoading ? 'Verificando y creando...' : 'Crear Cuenta'}
+              {isLoading ? 'Creando cuenta...' : 'Crear Cuenta'}
             </button>
           </div>
         </form>
