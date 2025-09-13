@@ -1,0 +1,55 @@
+/* === App.css (Con el arreglo para la Navbar) === */
+
+/* --- RESESTEO Y ESTILOS BASE --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f1f5f9;
+  color: #2c3e50;
+  /*
+   * ¡ESTA ES LA SOLUCIÓN!
+   * Añadimos un padding superior al cuerpo de la página para dejar
+   * espacio a la navbar fija.
+   * AJUSTA este valor (70px) a la altura exacta de tu Navbar si es necesario.
+  */
+  padding-top: 70px;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- PATRONES DE LAYOUT --- */
+
+/* A. Para páginas de contenido (Directorio, Editar, etc.) */
+.page-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* Se elimina el padding-top de aquí porque ahora lo controla el body */
+  padding: 2rem 2rem 3rem 2rem;
+  flex-grow: 1;
+}
+
+/* B. Para formularios a pantalla completa (Login, Registro) */
+.full-screen-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 1.5rem;
+  /* Ajustamos la altura mínima para descontar el padding del body y evitar un scroll innecesario */
+  min-height: calc(100vh - 70px);
+}
+
+/* --- AJUSTES PARA MÓVILES --- */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1.5rem 1rem 2rem 1rem;
+  }
+}

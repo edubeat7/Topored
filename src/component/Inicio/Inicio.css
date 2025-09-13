@@ -1,0 +1,70 @@
+/* === Inicio.css === */
+.hero-section {
+  /* Gradiente sutil de un gris oscuro a un azul profesional */
+  background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(58, 124, 165, 0.9)), url('https://source.unsplash.com/random/1600x900/?office,modern') no-repeat center center;
+  background-size: cover;
+  color: #ffffff;
+  padding: 8rem 1rem;
+  text-align: center;
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+}
+
+.hero-buttons .button {
+  margin: 0.5rem;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+}
+
+.button-light {
+  background-color: #ffffff;
+  color: #3A7CA5; /* Azul primario */
+}
+
+.button-light:hover {
+  background-color: #f1f5f9;
+}
+
+.button-outline-light {
+  border: 2px solid #ffffff;
+  color: #ffffff;
+}
+
+.button-outline-light:hover {
+  background-color: #ffffff;
+  color: #3A7CA5; /* Azul primario */
+}
+
+.features-section {
+  padding: 6rem 1rem;
+  background-color: #f1f5f9;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-item {
+  background-color: #ffffff;
+  padding: 2rem;
+  text-align: center;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  color: #3A7CA5; /* Azul primario */
+  margin-bottom: 1rem;
+}

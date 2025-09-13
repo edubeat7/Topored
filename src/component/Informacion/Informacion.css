@@ -1,0 +1,23 @@
+/* === Informacion.css === */
+.info-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #dfe4ea;
+  /* El acento de color ahora está en el borde superior */
+  border-top: 5px solid #3A7CA5;
+}
+
+.info-card .card-header {
+  background-color: transparent; /* Fondo limpio */
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 1.25rem 1.5rem 0.5rem 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.info-card .card-footer a {
+  color: #3A7CA5;
+}

@@ -1,0 +1,38 @@
+/* === Login.css === */
+.login-card, .reset-card {
+  width: 100%;
+  max-width: 450px;
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid #dfe4ea;
+}
+
+.form-control-lg:focus {
+  border-color: #3A7CA5;
+  box-shadow: 0 0 0 0.25rem rgba(58, 124, 165, 0.25);
+}
+
+.btn-primary {
+  background-color: #3A7CA5; /* Azul primario */
+  border-color: #3A7CA5;
+  padding: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2c5d7a; /* Azul más oscuro */
+  border-color: #2c5d7a;
+}
+
+.login-card a, .reset-card a {
+  color: #3A7CA5; /* Azul primario */
+  text-decoration: none;
+}
+
+.login-card a:hover, .reset-card a:hover {
+  text-decoration: underline;
+}
