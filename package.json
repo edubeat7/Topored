@@ -15,10 +15,12 @@
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "jsonwebtoken": "^9.0.2",
+    "libphonenumber-js": "^1.12.17",
     "react": "^19.1.1",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "resend": "^6.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
