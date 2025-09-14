@@ -20,19 +20,18 @@ export default async function handler(req, res) {
 
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET);
-    const userId = decoded.userId;
+    const userId = decoded.userId; // Obtenemos el ID del usuario desde el token
 
     // 2. Obtenemos los datos que vienen del frontend
     const requestBody = req.body;
 
     // 3. Validación del teléfono en el backend
+    // Verificamos si el campo 'telefono' está presente en la petición antes de validarlo
     if (requestBody.telefono && !isValidPhoneNumber(requestBody.telefono, 'VE')) {
       return res.status(400).json({ message: 'El formato del número de teléfono no es válido.' });
     }
     
-    // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
-    // Creamos un nuevo objeto traduciendo los nombres de los campos
-    // a los nombres exactos de las columnas en Airtable.
+    // 4. Mapeo de campos para que coincidan con Airtable
     const fieldsToUpdateInAirtable = {
       "Nombre": requestBody.nombre,
       "Apellido": requestBody.apellido,
@@ -46,7 +45,7 @@ export default async function handler(req, res) {
     };
 
 
-    // 4. Actualizar el registro en Airtable
+    // 5. Actualizar el registro en Airtable
     const updatedRecords = await base(tableName).update([
       {
         "id": userId,
@@ -57,9 +56,12 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, updatedRecord: updatedRecords[0] });
 
   } catch (error) {
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({ message: 'No autorizado: Token inválido.' });
+    // 6. Manejo de errores específico para JWT
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'No autorizado: Sesión inválida o expirada.' });
     }
+    
+    // Manejo de otros errores del servidor
     console.error("Error en /api/editProfile:", error);
     const errorMessage = error.message || 'Error al actualizar el perfil.';
     res.status(500).json({ message: errorMessage });
