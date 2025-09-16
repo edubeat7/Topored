@@ -1,67 +1,48 @@
-/* === Registro.css (Estilo Profesional Unificado) === */
+/* === App.css (Estilos Globales) === */
 
-/*
- * 1. La Tarjeta de Registro
- * Inspirada en .login-card, pero con un ancho mayor ('max-width') para
- * acomodar cómodamente todos los campos del formulario.
-*/
-.registration-card {
-  width: 100%;
-  max-width: 750px; /* Más ancho que el login para el formulario largo */
-  background-color: #ffffff;
-  padding: 2.5rem 3rem; /* Un poco más de padding horizontal */
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  border: 1px solid #dfe4ea;
+/* --- RESESTEO Y ESTILOS BASE --- */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-/*
- * 2. Encabezado dentro de la tarjeta
- * Reemplaza el antiguo bloque de color por un título simple y elegante.
-*/
-.registration-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.registration-header h2 {
-  font-weight: 700;
+body {
   margin: 0;
-  color: #2c3e50;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f1f5f9; /* Fondo gris claro */
+  color: #2c3e50; /* Gris oscuro para el texto */
+  /* Espacio para la navbar fija. Ajusta este valor si la altura de tu navbar cambia. */
+  padding-top: 70px;
 }
 
-.registration-header p {
-  color: #808B96; /* Gris para el texto secundario */
-  margin-top: 0.5rem;
+#root {
+  display: flex;
+  flex-direction: column;
 }
 
+/* --- PATRONES DE LAYOUT --- */
 
-/* --- 3. Estilos de Formulario (consistentes con Login) --- */
-.form-control,
-.form-select {
-  border-radius: 8px; /* Bordes redondeados para todos los inputs */
+/* A. Para páginas de contenido (Directorio, Editar, etc.) */
+.page-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 2rem 3rem 2rem;
+  flex-grow: 1;
 }
 
-.form-control:focus,
-.form-select:focus {
-  border-color: #3A7CA5; /* Azul primario */
-  box-shadow: 0 0 0 0.25rem rgba(58, 124, 165, 0.25);
+/* B. Para formularios a pantalla completa (Login, Registro) */
+.full-screen-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 1.5rem;
+  min-height: calc(100vh - 70px); /* Altura ajustada para la navbar */
 }
 
-/* Checkbox y Radio buttons con el color de la marca */
-.form-check-input:checked {
-  background-color: #3A7CA5;
-  border-color: #3A7CA5;
-}
-
-.form-check-input:focus {
-  box-shadow: 0 0 0 0.25rem rgba(58, 124, 165, 0.25);
-}
-
-
-/* --- 4. Botón Principal (exacto al de Login) --- */
+/* --- ESTILOS GENERALES PARA BOTONES Y FORMULARIOS --- */
 .btn-primary {
-  background-color: #3A7CA5; /* Azul primario */
+  background-color: #3A7CA5;
   border-color: #3A7CA5;
   padding: 0.9rem;
   font-weight: 600;
@@ -70,6 +51,18 @@
 }
 
 .btn-primary:hover {
-  background-color: #2c5d7a; /* Azul más oscuro */
+  background-color: #2c5d7a;
   border-color: #2c5d7a;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #3A7CA5;
+  box-shadow: 0 0 0 0.25rem rgba(58, 124, 165, 0.25);
+}
+
+/* --- AJUSTES PARA MÓVILES --- */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1.5rem 1rem 2rem 1rem;
+  }
 }

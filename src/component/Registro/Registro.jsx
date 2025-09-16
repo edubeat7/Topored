@@ -92,6 +92,32 @@ function RegistrationPage() {
           <p>Únete a nuestra comunidad profesional.</p>
         </div>
         
+        <div className="security-info-box">
+          <h4>Tu Seguridad, Nuestra Prioridad</h4>
+          <div className="info-item">
+            <span className="info-icon">🔐</span>
+            <div className="info-text">
+              <strong>Contraseñas Cifradas</strong>
+              <p>Tu contraseña se transforma en un código ilegible. Nadie, ni siquiera nosotros, tiene acceso a ella.</p>
+            </div>
+          </div>
+          <div className="info-item">
+            <span className="info-icon">🛡️</span>
+            <div className="info-text">
+              <strong>Datos Protegidos</strong>
+              <p>Toda tu información se almacena en una infraestructura segura para proteger tu privacidad en todo momento.</p>
+            </div>
+          </div>
+          <div className="info-item">
+            <span className="info-icon">🤝</span>
+            <div className="info-text">
+              <strong>Comunidad Exclusiva</strong>
+              <p>Esta es una red privada y de confianza, accesible únicamente para los miembros de nuestra comunidad de egresados.</p>
+            </div>
+          </div>
+          <p className="info-footer">¡Únete con total tranquilidad y empieza a conectar!</p>
+        </div>
+
         <form onSubmit={handleSubmit}>
           {error && <div className="alert alert-danger">{error}</div>}
           {success && <div className="alert alert-success">{success}</div>}
